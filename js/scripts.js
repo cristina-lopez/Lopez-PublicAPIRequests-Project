@@ -89,7 +89,6 @@ function userModal(data) {
  * @param {array} data - array of objects with information about people
  * @param {number} index - number indicating position in array
  */
-
 function modalBtns(data, index) {
     // Creates buttons
     let text = `
@@ -186,7 +185,7 @@ input.addEventListener('keyup', (e) => {
 
 // Event listener updates page when submit button is pressed
 const button = document.querySelector('.search-submit');
-button.addEventListener('click', (e) => {
+button.addEventListener('submit', (e) => {
    e.preventDefault();
    const inputValue = e.target.previousElementSibling.value;
    let filteredData = [];

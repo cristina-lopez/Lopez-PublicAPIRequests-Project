@@ -129,6 +129,7 @@ header h1 {
     bottom: 0;
     left: 0;
     background: rgba(0, 0, 0, 0.7);
+    
 }
 
 .modal {
@@ -138,10 +139,11 @@ header h1 {
     min-height: 415px;
     margin: 10px auto auto;
     padding-bottom: 15px;
-    background: rgba(255, 255, 255, 1);
+    background: rgb(189, 222, 241); /* change */
     border-radius: 0.25em;
     border: 1px solid rgba(100, 100, 100, 0.3);
     transition: .4s ease-out;
+    box-shadow: 3px 3px rgb(255, 196, 0), -1em 0 .4em rgb(0, 90, 128); /* change */
 }
 
 .modal-close-btn {
@@ -163,6 +165,7 @@ header h1 {
 
 .modal-name {
     margin-bottom: 5px;
+    font-size: 2em; /* change */
 }
 
 .modal-text {
@@ -185,7 +188,7 @@ header h1 {
     max-width: 420px;
     padding: 10px 15px 15px;;
     margin: 10px auto auto;
-    background: rgba(255, 255, 255, 1);
+    background: rgb(189, 222, 241); /* change */
     border-radius: 0.25em;
     border: 1px solid rgba(100, 100, 100, 0.3);
 }
@@ -201,6 +204,7 @@ header h1 {
     background: rgba(0, 0, 0, 0.8);
     border-radius: 0.35em;
     transition: .4s ease-out;
+    
   }
   
 
