@@ -1,11 +1,11 @@
-// Global variables.
+// global variables
 const userURL = 'https://randomuser.me/api/?results=12&nat=US';
 let searchDiv = document.querySelector('.search-container');
 let galleryDiv = document.getElementById('gallery');
 let users = []; // contains data of users obtained from fetch
 
 /**
- * Sends a single request to the API and uses the response 
+ * sends a single request to the API and uses the response 
  * data to display 12 users along with some basic information for each
  */
 Promise.all([fetchData(userURL)])
@@ -22,7 +22,7 @@ function fetchData(url) {
         .catch( error => console.log('Looks like there was a problem!', error) )
 }
 
-// Helper function used to check status of the url
+// helper function used to check status of the url
 function checkStatus(response) {
     if(response.ok) {
         return Promise.resolve(response);
@@ -31,9 +31,10 @@ function checkStatus(response) {
     }
 }
 
-/*
-* Create the HTML for the user cards displayed as a gallery 
-*/
+/**
+ * creates the HTML for the user cards displayed as a gallery 
+ * @param {array} data - array of objects with information about people
+ */
 function addUserHTML(data) {
     data.forEach( person => {
         let userItem = `
@@ -52,8 +53,9 @@ function addUserHTML(data) {
 }
 
 /**
- * Creates the HTML for a user modal. When a person is clicked, this function helps populate the
+ * creates the HTML for a user modal. When a person is clicked, this function helps populate the
  * information on the screen.
+ * @param {array} data - array of objects with information about people
  */
 function userModal(data) {
     let dobMonth = data.dob.date.substring(5, 7);
@@ -78,38 +80,63 @@ function userModal(data) {
                     <p class="modal-text">Birthday: ${formattedDOB}</p>
                 </div>
             </div>
-            <div class="modal-btn-container">
-                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
-                <button type="button" id="modal-next" class="modal-next btn">Next</button>
-            </div>
         </div>`;
     document.body.insertAdjacentHTML('beforeend', modalText);
-
-
-    // creates functionality for prev and next buttons
-    let nextButton = document.getElementById('modal-next');
-    let prevButton = document.getElementById('modal-prev');
-    //console.log(nextButton);
-    prevButton.addEventListener('click', e => {
-        //console.log('button pressed');
-        for (let i=0; i<users.length; i++) {
-            if (`${data.name.first} ${data.name.last}`===`${users[i].name.first} ${users[i].name.last}`) {
-                if (i !== 0) {
-                    return userModal(users[i-1]);
-                }
-                else {
-                    return userModal(users[users.length-1]);
-                }
-            }
-        }
-    });
-    //nextButton.addEventListener();
 }
 
+/**
+ * creates previous and next buttons on the modal. Handles interactions with the previous, next, and close buttons.
+ * @param {array} data - array of objects with information about people
+ * @param {number} index - number indicating position in array
+ */
 
+function modalBtns(data, index) {
+    // Creates buttons
+    let text = `
+        <div class="modal-btn-container">
+            <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+            <button type="button" id="modal-next" class="modal-next btn">Next</button>
+        </div>`
+    document.querySelector('.modal-container').insertAdjacentHTML('beforeend', text);
 
+    // Event listener on the button to close the modal and return to gallery
+    let modalCloseBtn = document.getElementById('modal-close-btn');
+    let modalDiv = document.querySelector('.modal-container');
+    modalCloseBtn.addEventListener('click', (e) => {
+        modalDiv.remove();
+    });
 
+    // Event listener on the previous button
+    let prevButton = document.getElementById('modal-prev');
+    prevButton.addEventListener('click', e => {
+        document.querySelector("div.modal-container").remove();
+        index -= 1;
+        if (index >= 0) {
+            userModal(users[(index)]);
+            modalBtns(users[(index)], index);
+        } else {
+            index = users.length-1;
+            userModal(users[(users.length - 1)]);
+            modalBtns(users[(users.length - 1)], index);
+            
+        }
+    });
 
+    // Event listener on the next button
+    let nextButton = document.getElementById('modal-next');
+    nextButton.addEventListener('click', e => {
+        document.querySelector("div.modal-container").remove();
+        index += 1;
+        if (index < users.length) {
+            userModal(users[(index)]);
+            modalBtns(users[(index)], index);
+        } else {
+            index = 0;
+            userModal(users[index]);
+            modalBtns(users[(index - 1)], index);
+        }
+    });
+}
 
 /**
  * Event listener on the gallery. When a card is clicked, the userModal function is called to display more
@@ -121,16 +148,10 @@ galleryDiv.addEventListener('click', e => {
         for (let i=0; i<users.length; i++) {
             if (`${users[i].name.first} ${users[i].name.last}` === chosenUser.children[1].firstElementChild.innerText) {
                 userModal(users[i]);
+                modalBtns(users[i], i);
             }
         }
     }
-
-    // Event listener on the button to close the modal and return to gallery.
-    let modalCloseBtn = document.getElementById('modal-close-btn');
-    let modalDiv = document.querySelector('.modal-container');
-    modalCloseBtn.addEventListener('click', (e) => {
-        modalDiv.remove();
-    });
 });
 
 /**
@@ -142,7 +163,7 @@ const searchText = `<form action="#" method="get">
 </form>`;
 searchDiv.insertAdjacentHTML("beforeend", searchText); 
 
-// Event listener that updates page based on search input
+// Event listener updates page based on search input
 const input = document.querySelector('.search-input');
 input.addEventListener('keyup', (e) => {
    e.preventDefault();
@@ -163,7 +184,7 @@ input.addEventListener('keyup', (e) => {
     }
 }); 
 
-// Event listener for Submit Search button
+// Event listener updates page when submit button is pressed
 const button = document.querySelector('.search-submit');
 button.addEventListener('click', (e) => {
    e.preventDefault();
@@ -183,4 +204,3 @@ button.addEventListener('click', (e) => {
         addUserHTML(filteredData);
     }
 });
-
