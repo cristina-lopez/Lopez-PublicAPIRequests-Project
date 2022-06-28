@@ -112,3 +112,45 @@ const searchText = `<form action="#" method="get">
 <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
 </form>`;
 searchDiv.insertAdjacentHTML("beforeend", searchText); 
+
+// Event listener that updates page based on search input
+const input = document.querySelector('.search-input');
+input.addEventListener('keyup', (e) => {
+   e.preventDefault();
+   const inputValue = e.target.value.toLowerCase();
+   let filteredData = [];
+   for (let i = 0; i < users.length; i++) {
+        let dataName = `${users[i].name.first} ${users[i].name.last}`.toLowerCase();
+        if (dataName.includes(inputValue)) {
+            filteredData.push(users[i]);
+        }
+    }
+    if (filteredData.length === 0) {
+        galleryDiv.replaceChildren();
+        galleryDiv.innerHTML = `<h2>No Results Found</h2>`;
+    } else {
+        galleryDiv.replaceChildren();
+        addUserHTML(filteredData);
+    }
+}); 
+
+// Event listener for Submit Search button
+const button = document.querySelector('.search-submit');
+button.addEventListener('click', (e) => {
+   e.preventDefault();
+   const inputValue = e.target.previousElementSibling.value;
+   let filteredData = [];
+   for (let i = 0; i < users.length; i++) {
+        let dataName = `${users[i].name.first} ${users[i].name.last}`.toLowerCase();
+        if (dataName.includes(inputValue)) {
+            filteredData.push(users[i]);
+        }
+    }
+    if (filteredData.length === 0) {
+        galleryDiv.replaceChildren();
+        galleryDiv.innerHTML = `<h2>No Results Found</h2>`;
+    } else {
+        galleryDiv.replaceChildren();
+        addUserHTML(filteredData);
+    }
+});
