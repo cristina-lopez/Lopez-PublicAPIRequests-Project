@@ -1,9 +1,9 @@
 // Variables
-const userURL = 'https://randomuser.me/api/?results=12';
+const userURL = 'https://randomuser.me/api/?results=12&nat=US';
 let searchDiv = document.querySelector('.search-container');
 let galleryDiv = document.getElementById('gallery');
-let cards = document.querySelectorAll('.card');
-console.log(cards[1]);
+//let cards = document.querySelectorAll('.card');
+let users =[];
 
 /**
  * Sends a single request to the API and uses the response 
@@ -11,7 +11,7 @@ console.log(cards[1]);
  */
 Promise.all([fetchData(userURL)])
     .then(data => {
-        let users = data[0].results;
+        users = data[0].results;
         addUserHTML(users);
     })
 
@@ -67,38 +67,48 @@ function addUserHTML(data) {
  * information on the screen.
  */
 function userModal(data) {
+    let dobMonth = data.dob.date.substring(5, 7);
+    let dobDay = data.dob.date.substring(8, 10);
+    let dobYear = data.dob.date.substring(0, 4);
+    let formattedDOB = `${dobMonth}/${dobDay}/${dobYear}`;
+    let areaCode = data.phone.substring(0,5);
+    let phoneNumber = data.phone.substring(6, 14);
+    let formattedPhone = `${areaCode} ${phoneNumber}`;
     let modalText = `
         <div class="modal-container">
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                 <div class="modal-info-container">
-                    <img class="modal-img" src="IMAGE - data[i].IMAGE - https://placehold.it/125x125" alt="profile picture">
-                    <h3 id="name" class="modal-name cap">FIRST - data[i].first - LAST - data[i].last</h3>
-                    <p class="modal-text">EMAIL - data[i].email</p>
-                    <p class="modal-text cap">CITY - data[i].city</p>
+                    <img class="modal-img" src="${data.picture.large}" alt="profile picture">
+                    <h3 id="name" class="modal-name cap">${data.name.first} ${data.name.last}</h3>
+                    <p class="modal-text">${data.email}</p>
+                    <p class="modal-text cap">${data.location.city}</p>
                     <hr>
-                    <p class="modal-text">PHONE - data[i].phone(555) 555-5555</p>
-                    <p class="modal-text">ADDRESS - data[i].addres - 123 Portland Ave., Portland, OR 97204</p>
-                    <p class="modal-text">Birthday: data[i].birthday - 10/21/2015</p>
+                    <p class="modal-text">${formattedPhone}</p>
+                    <p class="modal-text">${data.location.street.number} ${data.location.street.name}, ${data.location.city}, ${data.location.state} ${data.location.postcode}</p>
+                    <p class="modal-text">Birthday: ${formattedDOB}</p>
                 </div>
             </div>
         </div>`;
-    body.insertAdjacentHTML('beforeend', modalText);
+    document.body.insertAdjacentHTML('beforeend', modalText);
 }
 
-/* galleryDiv.addEventListener('click', e => {
+galleryDiv.addEventListener('click', e => {
     if (!(e.target.className === 'gallery')) {
-        console.log(e.target);
-
-        userModal(chosenUser);
+        let chosenUser = e.target.closest('.card');
+        //console.log(user.children[1].firstElementChild.innerText); name of the selected person
+        for (let i=0; i<users.length; i++) {
+            if (`${users[i].name.first} ${users[i].name.last}` === chosenUser.children[1].firstElementChild.innerText) {
+                //console.log(`The name is ${users[i].name.first} and the index is ${i}`);
+                userModal(users[i]);
+            }
+        }
     }
-    
 
-});
- */
-
-for (let i = 0; i < cards.length; i++) {
-    cards[i].addEventListener('click', (e) => {
-        console.log('hello');
+    let modalCloseBtn = document.getElementById('modal-close-btn');
+    let modalDiv = document.querySelector('.modal-container');
+    modalCloseBtn.addEventListener('click', (e) => {
+        modalDiv.remove();
     });
-}
+});
+
