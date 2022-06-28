@@ -1,9 +1,8 @@
-// Variables
+// Global variables.
 const userURL = 'https://randomuser.me/api/?results=12&nat=US';
 let searchDiv = document.querySelector('.search-container');
 let galleryDiv = document.getElementById('gallery');
-//let cards = document.querySelectorAll('.card');
-let users =[];
+let users = []; // contains data of users obtained from fetch
 
 /**
  * Sends a single request to the API and uses the response 
@@ -15,7 +14,7 @@ Promise.all([fetchData(userURL)])
         addUserHTML(users);
     })
 
-// fetchData function used to 
+// fetchData function used to parse through the data
 function fetchData(url) {
     return fetch(url)
         .then(checkStatus)
@@ -23,7 +22,7 @@ function fetchData(url) {
         .catch( error => console.log('Looks like there was a problem!', error) )
 }
 
-// Helper function used to 
+// Helper function used to check status of the url
 function checkStatus(response) {
     if(response.ok) {
         return Promise.resolve(response);
@@ -31,19 +30,9 @@ function checkStatus(response) {
         return Promise.reject(new Error(response.statusText));
     }
 }
-    
 
 /*
-Adds search input field
-*/
-const searchText = `<form action="#" method="get">
-<input type="search" id="search-input" class="search-input" placeholder="Search...">
-<input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-</form>`;
-searchDiv.insertAdjacentHTML("beforeend", searchText); 
-
-/*
-Adds gallery items
+* Create the HTML for the user cards displayed as a gallery 
 */
 function addUserHTML(data) {
     data.forEach( person => {
@@ -63,7 +52,7 @@ function addUserHTML(data) {
 }
 
 /**
- * Creates the HTML for a User Modal. When a person is clicked, this function helps populate the
+ * Creates the HTML for a user modal. When a person is clicked, this function helps populate the
  * information on the screen.
  */
 function userModal(data) {
@@ -93,18 +82,21 @@ function userModal(data) {
     document.body.insertAdjacentHTML('beforeend', modalText);
 }
 
+/**
+ * Event listener on the gallery. When a card is clicked, the userModal function is called to display more
+ * information about the user.
+ */
 galleryDiv.addEventListener('click', e => {
     if (!(e.target.className === 'gallery')) {
         let chosenUser = e.target.closest('.card');
-        //console.log(user.children[1].firstElementChild.innerText); name of the selected person
         for (let i=0; i<users.length; i++) {
             if (`${users[i].name.first} ${users[i].name.last}` === chosenUser.children[1].firstElementChild.innerText) {
-                //console.log(`The name is ${users[i].name.first} and the index is ${i}`);
                 userModal(users[i]);
             }
         }
     }
 
+    // Event listener on the button to close the modal and return to gallery.
     let modalCloseBtn = document.getElementById('modal-close-btn');
     let modalDiv = document.querySelector('.modal-container');
     modalCloseBtn.addEventListener('click', (e) => {
@@ -112,3 +104,11 @@ galleryDiv.addEventListener('click', e => {
     });
 });
 
+/**
+* Adds search input field
+*/
+const searchText = `<form action="#" method="get">
+<input type="search" id="search-input" class="search-input" placeholder="Search...">
+<input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+</form>`;
+searchDiv.insertAdjacentHTML("beforeend", searchText); 
