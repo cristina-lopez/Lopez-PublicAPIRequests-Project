@@ -78,9 +78,38 @@ function userModal(data) {
                     <p class="modal-text">Birthday: ${formattedDOB}</p>
                 </div>
             </div>
+            <div class="modal-btn-container">
+                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                <button type="button" id="modal-next" class="modal-next btn">Next</button>
+            </div>
         </div>`;
     document.body.insertAdjacentHTML('beforeend', modalText);
+
+
+    // creates functionality for prev and next buttons
+    let nextButton = document.getElementById('modal-next');
+    let prevButton = document.getElementById('modal-prev');
+    //console.log(nextButton);
+    prevButton.addEventListener('click', e => {
+        //console.log('button pressed');
+        for (let i=0; i<users.length; i++) {
+            if (`${data.name.first} ${data.name.last}`===`${users[i].name.first} ${users[i].name.last}`) {
+                if (i !== 0) {
+                    return userModal(users[i-1]);
+                }
+                else {
+                    return userModal(users[users.length-1]);
+                }
+            }
+        }
+    });
+    //nextButton.addEventListener();
 }
+
+
+
+
+
 
 /**
  * Event listener on the gallery. When a card is clicked, the userModal function is called to display more
@@ -154,3 +183,4 @@ button.addEventListener('click', (e) => {
         addUserHTML(filteredData);
     }
 });
+
